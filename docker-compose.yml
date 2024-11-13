@@ -2,26 +2,26 @@ services:
   mmdetection:
     build:
       context: ./mmdetection
-    container_name: mmdetection
     ports:
-      - "8000:8000" 
+      - "8000:8000"
+    environment:
+      - CUDA_VISIBLE_DEVICES=""  # Adjust this depending on GPU setup
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
     networks:
       - my_network
-    environment:
-      - CUDA_VISIBLE_DEVICES=all
-    
+
   cascadetabnet:
     build:
       context: ./CascadeTabNet
-    container_name: cascadetabnet
-    depends_on:
-      - mmdetection
     ports:
       - "6006:6006"
+    depends_on:
+      - mmdetection
+    environment:
+      - API_URL=http://mmdetection:8000  # URL to access the mmdetection service
     networks:
       - my_network
-    environment:
-      - CUDA_VISIBLE_DEVICES=all
 
 networks:
   my_network:
